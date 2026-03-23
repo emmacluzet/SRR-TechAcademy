@@ -14,8 +14,13 @@
     <description>Application de gestion des ressources et réservations pour Tech Academy</description>
 
     <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <!--
+            maven.compiler.release est la propriété moderne (Java 9+).
+            Elle remplace source + target et interdit en plus les API supprimées.
+            C'est elle que VS Code / Eclipse JDT lit en priorité pour configurer
+            l'environnement d'exécution du projet.
+        -->
+        <maven.compiler.release>17</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <javafx.version>21</javafx.version>
     </properties>
@@ -60,7 +65,18 @@
     <build>
         <plugins>
 
-            <!-- Plugin JavaFX pour lancer avec: mvn javafx:run -->
+            <!-- Plugin Maven Compiler : force Java 17 avec <release> -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <release>17</release>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+
+            <!-- Plugin JavaFX pour lancer avec : mvn javafx:run -->
             <plugin>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
@@ -72,17 +88,6 @@
                         <option>--add-opens</option>
                         <option>java.base/java.lang.reflect=ALL-UNNAMED</option>
                     </options>
-                </configuration>
-            </plugin>
-
-            <!-- Plugin Maven Compiler -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.11.0</version>
-                <configuration>
-                    <source>17</source>
-                    <target>17</target>
                 </configuration>
             </plugin>
 

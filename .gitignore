@@ -1,17 +1,22 @@
+# Maven
 target/
-pom.xml.tag
-pom.xml.releaseBackup
-pom.xml.versionsBackup
-pom.xml.next
-release.properties
-dependency-reduced-pom.xml
-buildNumber.properties
-.mvn/timing.properties
-# https://maven.apache.org/wrapper/#usage-without-binary-jar
-.mvn/wrapper/maven-wrapper.jar
+*.class
 
-# Eclipse m2e generated files
-# Eclipse Core
-.project
-# JDT-specific (Eclipse Java Development Tools)
+# Configuration sensible (ne jamais versionner)
+src/main/resources/config.properties
+
+# IDEs on garde .settings/ versionné car il fixe le niveau Java pour Eclipse/VS Code
+.idea/
+*.iml
+.vscode/
+
+# Fichiers Eclipse générés automatiquement (pas besoin de les versionner)
 .classpath
+.project
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
