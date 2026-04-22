@@ -50,4 +50,14 @@ public class Utilisateur {
     public void setRole(Role role){
         this.role = role;
     }
+
+    /* Retourne true si l'utilisateur est admin */
+    public boolean isAdmin(){
+        return Role.ADMIN.equals(this.role);
+    }
+
+    @Override
+    public String toString(){
+        return login + "(" + role + ")";
+    }
 }
