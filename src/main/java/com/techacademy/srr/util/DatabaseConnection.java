@@ -8,89 +8,89 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 /**
- * Singleton qui gère la connexion JDBC à la base de données.
+ * Utilitaire de connexion à la base de données PostgreSQL.
  *
- * Les paramètres de connexion sont lus depuis le fichier config.properties
- * placé dans src/main/resources. Ce fichier ne doit jamais être versionné
- * (voir .gitignore) ; seul config.properties.example l'est.
+ * <p>Implémente le patron Singleton pour partager une unique connexion
+ * pendant toute la durée de vie de l'application.
+ * Les paramètres (URL, login, mot de passe) sont lus depuis le fichier
+ * {@code config.properties} situé dans les ressources du projet.</p>
  *
- * Usage : Connection conn = DatabaseConnection.getInstance().getConnection();
+ * @author Emma Cluzet
+ * @version 1.0
  */
 public class DatabaseConnection {
 
+    /** Instance unique (Singleton). */
     private static DatabaseConnection instance;
+
+    /** Connexion JDBC active. */
     private Connection connection;
 
-    private DatabaseConnection() {
-        // Chargement silencieux : les erreurs sont remontées via les DAO
+    // -----------------------------------------------------------
+    // Constructeur privé : charge la config et ouvre la connexion
+    // -----------------------------------------------------------
+    private DatabaseConnection() throws SQLException {
+        Properties props = new Properties();
+
+        // Lecture du fichier config.properties dans le classpath
+        try (InputStream in = getClass().getClassLoader().getResourceAsStream("config.properties")) {
+
+            if (in == null) {
+                throw new SQLException("Fichier config.properties introuvable dans les ressources.");
+            }
+            props.load(in);
+
+        } catch (IOException e) {
+            throw new SQLException("Erreur lors de la lecture de config.properties : " + e.getMessage());
+        }
+
+        String url = props.getProperty("db.url");
+        String user = props.getProperty("db.user");
+        String password = props.getProperty("db.password");
+
+        // Ouverture de la connexion JDBC
+        this.connection = DriverManager.getConnection(url, user, password);
     }
 
+    // -----------------------------------------------------------
+    // Méthode d'accès au Singleton
+    // -----------------------------------------------------------
+
     /**
-     * Retourne l'instance unique (pattern Singleton).
+     * Retourne l'instance unique de {@code DatabaseConnection}.
+     * Crée la connexion lors du premier appel.
+     *
+     * @return l'instance Singleton
+     * @throws SQLException si la connexion échoue
      */
-    public static synchronized DatabaseConnection getInstance() {
-        if (instance == null) {
+    public static DatabaseConnection getInstance() throws SQLException {
+        // Réinitialise l'instance si la connexion a été fermée
+        if (instance == null || instance.getConnection().isClosed()) {
             instance = new DatabaseConnection();
         }
         return instance;
     }
 
     /**
-     * Retourne une connexion active. Si la connexion est fermée ou nulle,
-     * elle est ouverte à nouveau à partir des paramètres de config.properties.
+     * Retourne l'objet {@link Connection} JDBC.
      *
-     * @throws SQLException si la connexion échoue
+     * @return la connexion active
      */
-    public Connection getConnection() throws SQLException {
-        if (connection == null || connection.isClosed()) {
-            connection = openConnection();
-        }
+    public Connection getConnection() {
         return connection;
     }
 
-    /* Ouvre une nouvelle connexion en lisant config.properties. */
-    private Connection openConnection() throws SQLException {
-        Properties config = loadConfig();
-        String url      = config.getProperty("db.url");
-        String user     = config.getProperty("db.user");
-        String password = config.getProperty("db.password");
-
-        if (url == null || user == null || password == null) {
-            throw new SQLException(
-                "Paramètres de connexion manquants dans config.properties. " +
-                "Vérifiez que le fichier existe dans src/main/resources."
-            );
-        }
-
-        return DriverManager.getConnection(url, user, password);
-    }
-
-    /* Charge les propriétés depuis le classpath. */
-    private Properties loadConfig() throws SQLException {
-        Properties props = new Properties();
-        try (InputStream is = getClass().getClassLoader()
-                .getResourceAsStream("config.properties")) {
-            if (is == null) {
-                throw new SQLException(
-                    "Fichier config.properties introuvable dans le classpath. " +
-                    "Copiez config.properties.example en config.properties et renseignez vos valeurs."
-                );
-            }
-            props.load(is);
-        } catch (IOException e) {
-            throw new SQLException("Erreur lors de la lecture de config.properties : " + e.getMessage(), e);
-        }
-        return props;
-    }
-
-    /* Ferme proprement la connexion (à appeler à l'arrêt de l'application).*/
+    /**
+     * Ferme proprement la connexion à la base de données.
+     * À appeler lors de la fermeture de l'application.
+     */
     public void closeConnection() {
-        if (connection != null) {
-            try {
+        try {
+            if (connection != null && !connection.isClosed()) {
                 connection.close();
-            } catch (SQLException e) {
-                System.err.println("Erreur lors de la fermeture de la connexion : " + e.getMessage());
             }
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la fermeture de la connexion : " + e.getMessage());
         }
     }
 }

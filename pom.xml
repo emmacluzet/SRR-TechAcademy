@@ -3,31 +3,27 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
          http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
 
+    <!-- Identifiants du projet -->
     <groupId>com.techacademy</groupId>
     <artifactId>srr</artifactId>
-    <version>1.0.0</version>
+    <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
-
-    <name>Système de Réservation de Ressources</name>
-    <description>Application de gestion des ressources et réservations pour Tech Academy</description>
+    <name>Système de Réservation de Ressources - Tech-Academy</name>
 
     <properties>
-        <!--
-            maven.compiler.release est la propriété moderne (Java 9+).
-            Elle remplace source + target et interdit en plus les API supprimées.
-            C'est elle que VS Code / Eclipse JDT lit en priorité pour configurer
-            l'environnement d'exécution du projet.
-        -->
-        <maven.compiler.release>17</maven.compiler.release>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <javafx.version>21</javafx.version>
+        <!-- Version JavaFX -->
+        <javafx.version>21.0.3</javafx.version>
     </properties>
 
     <dependencies>
 
-        <!-- JavaFX -->
+        <!-- JavaFX : interface graphique (FXML, contrôles, graphiques) -->
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
@@ -39,58 +35,37 @@
             <version>${javafx.version}</version>
         </dependency>
 
-        <!-- Connecteur JDBC MySQL -->
+        <!-- Pilote JDBC PostgreSQL pour la connexion à la base de données -->
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.33</version>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.7.3</version>
         </dependency>
 
-        <!-- Hachage BCrypt des mots de passe -->
+        <!-- BCrypt pour le hachage sécurisé des mots de passe -->
         <dependency>
             <groupId>org.mindrot</groupId>
             <artifactId>jbcrypt</artifactId>
             <version>0.4</version>
         </dependency>
 
-        <!-- Génération PDF (bonus) -->
-        <dependency>
-            <groupId>org.apache.pdfbox</groupId>
-            <artifactId>pdfbox</artifactId>
-            <version>3.0.1</version>
-        </dependency>
-
     </dependencies>
 
     <build>
         <plugins>
-
-            <!-- Plugin Maven Compiler : force Java 17 avec <release> -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.13.0</version>
-                <configuration>
-                    <release>17</release>
-                    <encoding>UTF-8</encoding>
-                </configuration>
-            </plugin>
-
-            <!-- Plugin JavaFX pour lancer avec : mvn javafx:run -->
+            <!-- Plugin JavaFX Maven pour lancer l'application -->
             <plugin>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
                 <configuration>
-                    <mainClass>com.techacademy.srr.App</mainClass>
+                    <mainClass>com.techacademy.srr.MainApp</mainClass>
                     <options>
-                        <!-- Nécessaire pour JavaFX sans module-info -->
-                        <option>--add-opens</option>
-                        <option>java.base/java.lang.reflect=ALL-UNNAMED</option>
+                        <option>--add-modules</option>
+                        <option>javafx.controls,javafx.fxml</option>
                     </options>
                 </configuration>
             </plugin>
-
         </plugins>
     </build>
 

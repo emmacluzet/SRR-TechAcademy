@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<!--
+    Login.fxml - Vue de connexion
+    Contrôleur associé : LoginController
+    Tech-Academy - SRR
+-->
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.techacademy.srr.controller.LoginController"
+      alignment="CENTER"
+      spacing="15"
+      prefWidth="400" prefHeight="300">
+
+    <padding>
+        <Insets top="30" right="40" bottom="30" left="40"/>
+    </padding>
+
+    <!-- Titre -->
+    <Label text="TechAcademy - Connexion" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+
+    <!-- Champ login -->
+    <Label text="Identifiant :"/>
+    <TextField fx:id="loginField" promptText="Votre identifiant"/>
+
+    <!-- Champ mot de passe -->
+    <Label text="Mot de passe :"/>
+    <PasswordField fx:id="passwordField" promptText="Votre mot de passe"/>
+
+    <!-- Bouton de connexion -->
+    <Button text="Se connecter"
+            onAction="#handleConnexion"
+            defaultButton="true"
+            maxWidth="Infinity"
+            style="-fx-font-size: 14px;"/>
+
+    <!-- Message d'erreur -->
+    <Label fx:id="messageLabel"
+           text=""
+           style="-fx-text-fill: red;"/>
+
+</VBox>
