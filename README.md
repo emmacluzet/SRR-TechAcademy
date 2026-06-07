@@ -1,82 +1,126 @@
-# Système de Réservation de Ressources
+# SRR – Système de Réservation de Ressources
+**Tech-Academy | BTS SIO SLAM – Session 2026**  
+Candidat : Emma Cluzet – N° 02544744221
 
-Ce projet est une application de bureau développée en Java dans le cadre d'un examen. L'idée de départ est simple : Tech-Academy gérait ses salles de réunion et son matériel pédagogique sur un cahier papier, ce qui donnait inévitablement lieu à des doubles réservations et à des conflits de planning. L'objectif de cette application est de centraliser tout ça proprement, avec une interface graphique et une vraie vérification des disponibilités.
+---
 
-## Ce que fait l'application
+## Présentation
 
-L'application permet à deux types d'utilisateurs de travailler ensemble sur le même stock de ressources.
+Application desktop Java permettant la réservation sans chevauchement de créneaux
+pour les ressources pédagogiques de Tech-Academy (salles, projecteurs, ordinateurs).
 
-Un utilisateur standard peut consulter les ressources disponibles (salles, vidéoprojecteurs, ordinateurs portables), réserver l'une d'elles sur un créneau horaire précis, et annuler ses propres réservations. Si une ressource est déjà prise sur tout ou partie du créneau demandé, la réservation est bloquée, c'est la contrainte métier centrale du projet.
-
-Un administrateur a en plus la main sur le catalogue de ressources : il peut en ajouter, les modifier, les supprimer. Il voit aussi l'ensemble des réservations de tous les utilisateurs.
+---
 
 ## Stack technique
 
-Le projet tourne sur Java 17 avec JavaFX pour l'interface graphique (vues en `.fxml`). La persistance est gérée via JDBC sur une base MySQL ou PostgreSQL. Le tout est construit avec Maven et suit une architecture MVC avec des classes DAO pour toutes les interactions avec la base.
+| Couche         | Technologie         |
+|----------------|---------------------|
+| Langage        | Java 17 (JDK)       |
+| Interface      | JavaFX 17 + FXML    |
+| Persistance    | JDBC + PostgreSQL   |
+| Sécurité mots de passe | BCrypt (jbcrypt 0.4) |
+| Build          | Maven 3             |
+| Versionnage    | Git / GitHub        |
 
-## Lancer le projet
-
-Prérequis : Java 17+, Maven, et une instance MySQL ou PostgreSQL qui tourne en local.
-
-Commencer par créer la base de données et exécuter les deux scripts SQL qui se trouvent dans le dossier `sql/` :
-
-```
-schema.sql   -- crée les tables
-data.sql     -- insère les données de test
-```
-
-Ensuite, copier le fichier `src/main/resources/config.properties.example` en `config.properties` dans le même dossier, et renseigner les paramètres de connexion :
-
-```
-db.url=jdbc:mysql://localhost:3306/srr
-db.user=votre_utilisateur
-db.password=votre_mot_de_passe
-```
-
-Puis lancer l'application :
-
-```
-mvn clean javafx:run
-```
-
-## Comptes de test
-
-Une fois le `data.sql` exécuté, les comptes suivants sont disponibles pour la démonstration :
-
-| Login       | Mot de passe | Rôle          |
-|-------------|--------------|---------------|
-| admin       | admin123     | Administrateur |
-| alice       | alice123     | Utilisateur   |
-| bob         | bob123       | Utilisateur   |
+---
 
 ## Structure du projet
 
 ```
-src/
-  main/
-    java/
-      com/techacademy/srr/
-        model/          -- classes métier (Utilisateur, Ressource, Reservation)
-        dao/            -- interfaces et implémentations DAO
-        controller/     -- controllers JavaFX
-        util/           -- SessionManager, DatabaseConnection, etc.
-    resources/
-      com/techacademy/srr/
-        view/           -- fichiers .fxml
-      config.properties
-sql/
-  schema.sql
-  data.sql
-docs/
-  diagramme-cas-utilisation.png
-  diagramme-classes.png
-  mld.png
+SRR/
+├── pom.xml                          ← Dépendances Maven
+└── src/main/
+    ├── java/com/techacademy/srr/
+    │   ├── MainApp.java             ← Point d'entrée JavaFX
+    │   ├── model/
+    │   │   ├── Utilisateur.java
+    │   │   ├── Ressource.java
+    │   │   └── Reservation.java
+    │   ├── dao/
+    │   │   ├── UtilisateurDAO.java
+    │   │   ├── RessourceDAO.java    ← Contient verifierDisponibilite()
+    │   │   └── ReservationDAO.java
+    │   ├── controller/
+    │   │   ├── LoginController.java
+    │   │   ├── PlanningController.java
+    │   │   └── GestionRessourcesController.java
+    │   └── util/
+    │       ├── DatabaseConnection.java  ← Singleton JDBC
+    │       └── SessionManager.java
+    └── resources/
+        ├── config.properties            ← Paramètres BDD (à configurer)
+        ├── db/
+        │   ├── schema.sql               ← Création des tables
+        │   └── data.sql                 ← Données de test
+        └── com/techacademy/srr/view/
+            ├── Login.fxml
+            ├── Planning.fxml
+            └── GestionRessources.fxml
 ```
 
-## Livrables du jury
+---
 
-Les trois documents demandés (diagramme de cas d'utilisation, diagramme de classes, schéma relationnel) sont disponibles dans le dossier `docs/`.
+## Installation et configuration
 
-## Auteur
+### 1. Prérequis
 
-Emma Cluzet
+- Java 17 (JDK)
+- Maven 3.8+
+- PostgreSQL 14+
+
+### 2. Créer la base de données
+
+```bash
+psql -U postgres -c "CREATE DATABASE srr_db;"
+psql -U postgres -d srr_db -f src/main/resources/db/schema.sql
+psql -U postgres -d srr_db -f src/main/resources/db/data.sql
+```
+
+### 3. Configurer la connexion
+
+Éditer `src/main/resources/config.properties` :
+
+```properties
+db.url=jdbc:postgresql://localhost:5432/srr_db
+db.user=postgres
+db.password=votre_mot_de_passe
+```
+
+### 4. Lancer l'application
+
+```bash
+mvn javafx:run
+```
+
+---
+
+## Comptes de test
+
+| Login | Mot de passe | Rôle  |
+|-------|-------------|-------|
+| admin | admin123    | ADMIN |
+| user1 | user123     | USER  |
+| user2 | user123     | USER  |
+
+---
+
+## Contrainte métier principale
+
+Avant toute insertion en base, `RessourceDAO.verifierDisponibilite()` exécute :
+
+```sql
+SELECT COUNT(*) FROM reservation
+WHERE id_ressource = ?
+  AND id           != ?
+  AND date_debut   <  ?   -- fin demandée
+  AND date_fin     >  ?   -- début demandé
+```
+
+Si le compteur est > 0, un conflit est détecté et la réservation est refusée.
+
+---
+
+## Liens
+
+- Code source : https://github.com/emmacluzet/SSR-TechAcademy
+- Portfolio   : https://emmacluzet.github.io/portfolio/#projet

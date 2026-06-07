@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<!--
+    Planning.fxml - Vue principale : planning + formulaire de réservation
+    Contrôleur associé : PlanningController
+    Tech-Academy - SRR
+-->
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.techacademy.srr.controller.PlanningController"
+            prefWidth="900" prefHeight="600">
+
+    <!-- ===== EN-TÊTE ===== -->
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="15"
+              style="-fx-background-color: #3c6e9e; -fx-padding: 10;">
+            <Label text="SRR – Système de Réservation de Ressources"
+                   style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label fx:id="labelUtilisateur"
+                   style="-fx-text-fill: white;"/>
+            <Button text="Déconnexion"
+                    onAction="#handleDeconnexion"/>
+        </HBox>
+    </top>
+
+    <!-- ===== PARTIE CENTRALE : tableau du planning ===== -->
+    <center>
+        <VBox spacing="8">
+            <padding><Insets top="10" right="10" bottom="5" left="10"/></padding>
+
+            <Label text="Planning des réservations"
+                   style="-fx-font-weight: bold;"/>
+
+            <TableView fx:id="tableReservations" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="colRessource" text="Ressource" prefWidth="200"/>
+                    <TableColumn fx:id="colUtilisateur" text="Utilisateur" prefWidth="130"/>
+                    <TableColumn fx:id="colDebut" text="Début" prefWidth="160"/>
+                    <TableColumn fx:id="colFin" text="Fin" prefWidth="160"/>
+                </columns>
+                <placeholder>
+                    <Label text="Aucune réservation à afficher."/>
+                </placeholder>
+            </TableView>
+
+            <!-- Bouton annulation de réservation sélectionnée -->
+            <HBox spacing="10">
+                <Button text="Annuler la réservation sélectionnée"
+                        onAction="#handleAnnuler"
+                        style="-fx-background-color: #c0392b; -fx-text-fill: white;"/>
+                <Button text="Gérer les ressources (Admin)"
+                        onAction="#handleGererRessources"/>
+            </HBox>
+        </VBox>
+    </center>
+
+    <!-- ===== PARTIE DROITE : formulaire de réservation ===== -->
+    <right>
+        <VBox spacing="10"
+              style="-fx-background-color: #f5f5f5; -fx-border-color: #cccccc; -fx-border-width: 0 0 0 1;">
+            <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
+
+            <Label text="Nouvelle réservation"
+                   style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+
+            <!-- Ressource -->
+            <Label text="Ressource :"/>
+            <ComboBox fx:id="comboRessource"
+                      promptText="Choisir une ressource"
+                      maxWidth="Infinity"/>
+
+            <!-- Date et heure de début -->
+            <Label text="Date de début :"/>
+            <DatePicker fx:id="dateDebut"
+                        promptText="jj/mm/aaaa"
+                        maxWidth="Infinity"/>
+            <TextField fx:id="heureDebut"
+                       promptText="Heure début (HH:mm)"/>
+
+            <!-- Date et heure de fin -->
+            <Label text="Date de fin :"/>
+            <DatePicker fx:id="dateFin"
+                        promptText="jj/mm/aaaa"
+                        maxWidth="Infinity"/>
+            <TextField fx:id="heureFin"
+                       promptText="Heure fin (HH:mm)"/>
+
+            <!-- Bouton réserver -->
+            <Button text="Réserver"
+                    onAction="#handleReserver"
+                    maxWidth="Infinity"
+                    style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-size: 13px;"/>
+
+            <!-- Message retour -->
+            <Label fx:id="messageLabel"
+                   text=""
+                   wrapText="true"
+                   maxWidth="200"
+                   style="-fx-text-fill: #c0392b;"/>
+        </VBox>
+    </right>
+
+</BorderPane>

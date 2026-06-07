@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<!--
+    GestionRessources.fxml - Vue CRUD du catalogue de ressources
+    Contrôleur associé : GestionRessourcesController
+    Accès réservé aux administrateurs.
+    Tech-Academy - SRR
+-->
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.techacademy.srr.controller.GestionRessourcesController"
+            prefWidth="700" prefHeight="500">
+
+    <!-- ===== EN-TÊTE ===== -->
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="15" style="-fx-background-color: #3c6e9e; -fx-padding: 10;">
+            <Label text="Gestion du catalogue de ressources" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="← Retour au planning" onAction="#handleRetour"/>
+        </HBox>
+    </top>
+
+    <!-- ===== LISTE DES RESSOURCES ===== -->
+    <center>
+        <VBox spacing="8">
+            <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
+
+            <Label text="Ressources existantes :" style="-fx-font-weight: bold;"/>
+
+            <!-- Cliquer sur une ligne pré-remplit le formulaire -->
+            <ListView fx:id="listRessources" VBox.vgrow="ALWAYS"/>
+        </VBox>
+    </center>
+
+    <!-- ===== FORMULAIRE CRUD ===== -->
+    <right>
+        <VBox spacing="10" style="-fx-background-color: #f5f5f5; -fx-border-color: #cccccc; -fx-border-width: 0 0 0 1;">
+            <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
+
+            <Label text="Ajouter / Modifier une ressource" style="-fx-font-weight: bold; -fx-font-size: 13px;"/>
+
+            <Label text="Nom :"/>
+            <TextField fx:id="champNom" promptText="Ex: Salle A101"/>
+
+            <Label text="Type :"/>
+            <TextField fx:id="champType" promptText="SALLE, PROJECTEUR ou ORDINATEUR"/>
+
+            <!-- Boutons CRUD -->
+            <Button text="Ajouter" onAction="#handleAjouter" maxWidth="Infinity" style="-fx-background-color: #27ae60; -fx-text-fill: white;"/>
+
+            <Button text="Modifier la sélection" onAction="#handleModifier" maxWidth="Infinity" style="-fx-background-color: #e67e22; -fx-text-fill: white;"/>
+
+            <Button text="Supprimer la sélection" onAction="#handleSupprimer" maxWidth="Infinity" style="-fx-background-color: #c0392b; -fx-text-fill: white;"/>
+
+            <!-- Message retour -->
+            <Label fx:id="messageLabel" text="" wrapText="true" maxWidth="200" style="-fx-text-fill: #c0392b;"/>
+        </VBox>
+    </right>
+
+</BorderPane>
